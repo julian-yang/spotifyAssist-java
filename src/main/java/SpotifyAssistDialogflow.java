@@ -1,8 +1,11 @@
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Map;
-import java.util.function.Function;
 import com.tmsdurham.dialogflow.*;
 import com.tmsdurham.actions.*;
 import java.util.logging.Logger;
@@ -34,11 +37,36 @@ public class SpotifyAssistDialogflow {
 
   static Void welcome(DialogflowApp app) {
     ResponseWrapper<DialogflowResponse> response = app.ask("Hello world?");
+    new Env().lookup();
     return null;
+  }
+
+  static class Env {
+
+    String lookup() {
+
+      return "";
+    }
+
+    String test;
   }
 
   static Void enableShuffle(DialogflowApp app) {
     app.tell("Turning on shuffle");
+    try {
+      FileReader fileReader = new FileReader(".env.txt");
+      BufferedReader bufferedReader = new BufferedReader(fileReader);
+      StringBuilder stringBuilder = new StringBuilder();
+      bufferedReader.lines().map((line) -> stringBuilder.append(line));
+      String json = stringBuilder.toString();
+      Env test = new Gson().fromJson(json, Env.class);
+      logger.warning(test.test);
+
+    } catch (FileNotFoundException ex) {
+      logger.severe("Could not find file");
+    } catch (IOException ex) {
+
+    }
     return null;
   }
 
